@@ -1,5 +1,5 @@
 import scrapy
-
+import os
 
 class SimpleSpider(scrapy.Spider):
     name = 'oic'
@@ -7,13 +7,15 @@ class SimpleSpider(scrapy.Spider):
 
     def parse(self, response):
         pdf_links = response.xpath('//a[contains(@href, ".pdf") and @aria-labelledby]')
-        counter = 1
+        # counter = 1
         
         for link in pdf_links:
             pdf_url = response.urljoin(link.xpath('@href').get())
-            title = str(counter)
-        
-            counter += 1
+            # title = str(counter)
+            raw_title = os.path.basename(pdf_url).replace('.pdf', '')
+            title = raw_title.replace('-', ' ').capitalize()
+            
+            # counter += 1
             
             self.log(f'PDF URL: {pdf_url}, Title: {title}')
             item = {
